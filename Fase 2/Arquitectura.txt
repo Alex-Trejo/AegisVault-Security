@@ -1,0 +1,52 @@
+@startuml
+!theme vibrant
+skinparam componentStyle uml2
+left to right direction
+
+package "Cliente (Usuario)" {
+    actor "Usuario" as User
+    component "Navegador Web" as Browser {
+        [Next.js Frontend] as UI
+    }
+}
+
+package "AegisVault Infrastructure (Docker)" {
+    
+    component "Reverse Proxy (Nginx)" as Proxy <<Security>>
+
+    package "Backend Service (Python/FastAPI)" {
+        [API Gateway] as API
+        
+        package "Crypto Engine Core" {
+            [AES-256-GCM Module] as AES
+            [RSA-2048 Key Manager] as RSA
+            [Bcrypt Hasher] as Hash
+            [Vigenère Lab] as Vig
+        }
+        
+        note right of AES: Cifrado de Payload\n(Confidencialidad)
+        note right of RSA: Intercambio de Llaves\n(Identidad/Compartición)
+        note right of Hash: Passwords & Integrity
+    }
+
+    package "Persistencia (Database)" {
+        database "PostgreSQL" as DB
+    }
+}
+
+' Flujos
+User --> UI : Interactúa (HTTPS)
+UI --> Proxy : JSON Requests (REST)
+Proxy --> API : Forward Request
+
+' Conexiones Internas Backend
+API --> AES : Solicita Cifrado/Descifrado
+API --> RSA : Solicita Enveloping de Llaves
+API --> Hash : Verifica Credenciales
+API --> Vig : Procesa Demo Educativa
+
+' Persistencia
+API --> DB : Guarda Blobs Cifrados + Llaves Cifradas
+DB --> API : Retorna Data Cifrada
+
+@enduml

@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  # Servicio del Backend (FastAPI)
+  backend:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/app/app # Sincroniza el código local para desarrollo en vivo
+    env_file:
+      - .env # Carga las variables de entorno desde un archivo .env
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  # Servicio de la Base de Datos (PostgreSQL)
+  db:
+    image: postgres:15-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - .env # Usa las mismas variables para la configuración de la BD
+    ports:
+      - "5432:5432" # Expone el puerto de la BD al host para debugging
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

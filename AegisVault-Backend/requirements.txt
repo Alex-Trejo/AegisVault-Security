@@ -1,0 +1,17 @@
+# --- Web Framework ---
+fastapi==0.109.2
+uvicorn[standard]==0.27.1
+
+# --- Base de Datos (ORM y Driver) ---
+SQLAlchemy==2.0.25
+psycopg2-binary==2.9.9
+alembic==1.13.1 # Para migraciones de base de datos (buenas prácticas)
+
+# --- Criptografía y Seguridad ---
+cryptography==42.0.5
+passlib[bcrypt]==1.7.4
+python-jose[cryptography]==3.3.0
+
+# --- Configuración y Validación ---
+pydantic-settings==2.2.1
+python-multipart==0.0.9 # Necesario para la inyección de dependencias de FastAPI con formularios

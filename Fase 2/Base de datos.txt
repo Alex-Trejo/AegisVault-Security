@@ -1,0 +1,70 @@
+@startuml
+!theme plain
+hide circle
+skinparam linetype ortho
+
+entity "Users" as user {
+  *id : UUID <<PK>>
+  --
+  username : VARCHAR(50) <<Unique>>
+  password_hash : VARCHAR(255) <<Bcrypt>>
+  public_key : TEXT <<RSA-2048 PEM>>
+  encrypted_private_key : TEXT <<AES Encrypted>>
+  created_at : TIMESTAMP
+}
+
+entity "Secrets" as secret {
+  *id : UUID <<PK>>
+  --
+  owner_id : UUID <<FK>>
+  name : VARCHAR(100)
+  description : TEXT
+  created_at : TIMESTAMP
+  is_deleted : BOOLEAN
+}
+
+entity "SecretVersions" as version {
+  *id : UUID <<PK>>
+  --
+  secret_id : UUID <<FK>>
+  version_number : INT
+  encrypted_data : BYTEA <<AES-256 Payload>>
+  nonce_iv : BYTEA <<Initialization Vector>>
+  auth_tag : BYTEA <<GCM Tag>>
+  created_at : TIMESTAMP
+}
+
+entity "SecretKeys" as key {
+  *id : UUID <<PK>>
+  --
+  secret_id : UUID <<FK>>
+  user_id : UUID <<FK>>
+  encrypted_aes_key : BYTEA <<RSA Encrypted>>
+  granted_at : TIMESTAMP
+}
+
+entity "AuditLogs" as log {
+  *id : UUID <<PK>>
+  --
+  user_id : UUID <<FK>>
+  action : VARCHAR(50)
+  resource_id : UUID
+  ip_address : INET
+  timestamp : TIMESTAMP
+}
+
+' Relaciones
+user ||..o{ secret : "Owns"
+secret ||..|{ version : "Has Versions"
+secret ||..|{ key : "Access Controls"
+user ||..o{ key : "Has Access"
+user ||..o{ log : "Generates"
+
+note right of key
+  TABLA CRÍTICA PARA CIFRADO HÍBRIDO:
+  Aquí se guarda la "Llave AES" de un secreto,
+  cifrada con la "Llave Pública RSA" del usuario.
+  Permite compartir secretos sin duplicar el payload.
+end note
+
+@enduml

@@ -1,0 +1,90 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@plugin "tailwindcss-animate";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  /* Fondo General (Navy Profundo) */
+  --background: 224 71% 4%;
+  --foreground: 213 31% 91%;
+
+  /* Colores de marca (Emerald/Cian Cyber) */
+  --primary: 142 70% 50%;
+  --primary-foreground: 144 80% 5%;
+  
+  /* Tarjetas y Menús */
+  --card: 224 71% 4%;
+  --card-foreground: 213 31% 91%;
+  --popover: 224 71% 4%;
+  --popover-foreground: 213 31% 91%;
+
+  /* Estados Muted (Gris azulado) */
+  --muted: 215 28% 17%;
+  --muted-foreground: 215 20% 65%;
+
+  /* Acentos y Bordes */
+  --accent: 215 28% 17%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 62% 30%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 215 28% 17%;
+  --input: 215 28% 17%;
+  --ring: 142 70% 50%;
+  --radius: 0.5rem;
+}
+
+/* Forzar modo oscuro siempre o según clase */
+.dark {
+  --background: 224 71% 4%;
+  --foreground: 213 31% 91%;
+}
+
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-mono), monospace;
+  }
+
+  /* CORRECCIÓN CRÍTICA DE INPUTS: Asegurar texto visible */
+  input, textarea {
+    @apply bg-slate-900/50 border-slate-800 text-white placeholder:text-slate-500;
+    color: white !important;
+  }
+
+  /* El sidebar activo no debe ser negro */
+  .bg-primary\/10 {
+    background-color: color-mix(in srgb, hsl(var(--primary)) 15%, transparent);
+  }
+}
+
+.glass-card {
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
+}
